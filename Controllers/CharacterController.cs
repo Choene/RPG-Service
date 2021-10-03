@@ -46,7 +46,25 @@ namespace WebAPIService.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdatedCharacter(UpdateCharacterDto updatedCharacter) 
         {
-            return Ok(await _characterService.UpdateCharacter(updatedCharacter));
+            //If Character not found, we'll get 404 Not found
+            ServiceResponse<GetCharacterDto> response = await _characterService.UpdateCharacter(updatedCharacter);
+            if (response.Data == null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
+
+        //Delete character method
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            ServiceResponse<List<GetCharacterDto>> response = await _characterService.DeleteCharacter(id);
+            if (response.Data == null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
         }
     }
 }
